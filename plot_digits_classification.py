@@ -14,6 +14,8 @@ hand-written digits, from 0-9.
 # Standard scientific Python imports
 import matplotlib.pyplot as plt
 
+from nltk.corpus import movie_reviews
+
 # Import datasets, classifiers and performance metrics
 from sklearn import datasets, svm, metrics
 from sklearn.model_selection import train_test_split

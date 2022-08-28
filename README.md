@@ -1,4 +1,7 @@
 Pushing git, with requirement.txt having packages required.
 
-Output of classification :Output.PNG
+
+Python version screenshot is. PythonV.png
+Output of classification is : Output.png
+NLTK Version :nltkV.png
 
