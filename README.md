@@ -1,5 +1,5 @@
 screenshot 1 - creating new branch 
-image.png
+s1.png
 
 Screenshot 2 - test cases
-image.png
+s2.png
