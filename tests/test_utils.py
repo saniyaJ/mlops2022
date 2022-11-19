@@ -5,17 +5,17 @@ from joblib import load
 from mlops.utils import get_all_h_param_comb, tune_and_save
 from sklearn import svm, metrics
 
-def test_class_allclasses(y_pred):
-    all_classes = 10
-    #if prediction has 10 classes then classifier predicts all classes
-    assert len(list(set(y_pred))) == all_classes
-    print("Test Passed, Classifier predicts all classes")
+# def test_class_allclasses(y_pred):
+#     all_classes = 10
+#     #if prediction has 10 classes then classifier predicts all classes
+#     assert len(list(set(y_pred))) == all_classes
+#     print("Test Passed, Classifier predicts all classes")
 
-def test_bias_oneclass(y_pred):
-    #if prediction has more than 1 class, then it is not bias to one class
-    assert len(list(set(y_pred))) > 1
-    print("Test Passed, Classifier is not biased for one class")
-    
+# def test_bias_oneclass(y_pred):
+#     #if prediction has more than 1 class, then it is not bias to one class
+#     assert len(list(set(y_pred))) > 1
+#     print("Test Passed, Classifier is not biased for one class")
+
 # test case to check if all the combinations of the hyper parameters are indeed getting created
 def test_get_h_param_comb():
     gamma_list = [0.01, 0.005, 0.001, 0.0005, 0.0001]
