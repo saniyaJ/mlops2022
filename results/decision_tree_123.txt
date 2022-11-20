@@ -1,0 +1,1 @@
+{'test_accuracy': 0.8435754189944135, 'macro_f1': 0.8379231481161915, 'model path': 'models/decision_tree_max_depth=100.joblib'}

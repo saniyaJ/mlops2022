@@ -65,14 +65,14 @@ def pred_image_viz(x_test, predictions):
 # test to evaluate the performance of the model
 
 
-def train_dev_test_split(data, label, train_frac, dev_frac):
-
+def train_dev_test_split(data, label, train_frac, dev_frac,state):
+    # random state constrols reproduceability 
     dev_test_frac = 1 - train_frac
     x_train, x_dev_test, y_train, y_dev_test = train_test_split(
-        data, label, test_size=dev_test_frac, shuffle=True
+        data, label, test_size=dev_test_frac, shuffle=True ,random_state = state
     )
     x_test, x_dev, y_test, y_dev = train_test_split(
-        x_dev_test, y_dev_test, test_size=(dev_frac) / dev_test_frac, shuffle=True
+        x_dev_test, y_dev_test, test_size=(dev_frac) / dev_test_frac, shuffle=True ,random_state = state
     )
 
     return x_train, y_train, x_dev, y_dev, x_test, y_test
@@ -130,7 +130,7 @@ def tune_and_save(
     if type(clf) == tree.DecisionTreeClassifier:
         model_type = "decision_tree"
 
-    best_model_name = model_type + "_" + best_param_config + ".joblib"
+    best_model_name = "models/"+model_type + "_" + best_param_config + ".joblib"
     if model_path == None:
         model_path = best_model_name
     dump(best_model, model_path)

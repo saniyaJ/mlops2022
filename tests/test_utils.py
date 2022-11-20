@@ -1,9 +1,56 @@
 import sys, os
 import numpy as np
 from joblib import load
+import pandas as pd
+from mlops.utils import get_all_h_param_comb, tune_and_save,train_dev_test_split,data_viz,preprocess_digits
+from sklearn import svm, metrics,datasets
 
-from mlops.utils import get_all_h_param_comb, tune_and_save
-from sklearn import svm, metrics
+def test_reproduceablity():
+    #Random state helps to do reproduceability added in func train_dev_test_split
+    state = 123
+    digits = datasets.load_digits()
+    data_viz(digits)
+    data, label = preprocess_digits(digits)
+    train_frac, dev_frac, test_frac = 0.8, 0.1, 0.1
+    #first run
+    x_train, y_train, x_dev, y_dev, x_test, y_test = train_dev_test_split(
+        data, label, train_frac, dev_frac,state
+    )
+
+    #Second run 
+    x_train2, y_train2, x_dev2, y_dev2, x_test2, y_test2 = train_dev_test_split(
+            data, label, train_frac, dev_frac,state
+        )
+        
+    if np.array_equal(x_train,x_train2):        
+        print('Arrays are equal')
+    else:
+        print('Arrays are not equal')
+    print(np.array_equal(x_train,x_train2))
+    assert np.array_equal(x_train,x_train2)
+
+def test_non_reproduceablity():
+    #Random state helps to do reproduceability added in func train_dev_test_split
+    
+    digits = datasets.load_digits()
+    data_viz(digits)
+    data, label = preprocess_digits(digits)
+    train_frac, dev_frac, test_frac = 0.8, 0.1, 0.1
+    #first run
+    x_train, y_train, x_dev, y_dev, x_test, y_test = train_dev_test_split(
+        data, label, train_frac, dev_frac,1
+    )
+
+    #Second run 
+    x_train2, y_train2, x_dev2, y_dev2, x_test2, y_test2 = train_dev_test_split(
+            data, label, train_frac, dev_frac,3
+        )
+    if np.array_equal(x_train,x_train2):        
+        print('Arrays are equal')
+    else:
+        print('Arrays are not equal')
+    assert np.array_equal(x_train,x_train2) == False
+
 
 # def test_class_allclasses(y_pred):
 #     all_classes = 10
@@ -17,6 +64,7 @@ from sklearn import svm, metrics
 #     print("Test Passed, Classifier is not biased for one class")
 
 # test case to check if all the combinations of the hyper parameters are indeed getting created
+
 def test_get_h_param_comb():
     gamma_list = [0.01, 0.005, 0.001, 0.0005, 0.0001]
     c_list = [0.1, 0.2, 0.5, 0.7, 1, 2, 5, 7, 10]
