@@ -1,60 +1,140 @@
-# mlops-22
-Here is the current output of `python plot_graphs.py`
+# Getting Started with Python on IBM Cloud
+saniya edition 
 
-```
-Found new best metric with :{'gamma': 0.01, 'C': 0.1}
-New best val metric:0.08839779005524862
-Found new best metric with :{'gamma': 0.01, 'C': 0.5}
-New best val metric:0.23756906077348067
-Found new best metric with :{'gamma': 0.01, 'C': 0.7}
-New best val metric:0.4696132596685083
-Found new best metric with :{'gamma': 0.01, 'C': 1}
-New best val metric:0.8397790055248618
-Found new best metric with :{'gamma': 0.01, 'C': 2}
-New best val metric:0.856353591160221
-Found new best metric with :{'gamma': 0.005, 'C': 0.5}
-New best val metric:0.9613259668508287
-Found new best metric with :{'gamma': 0.005, 'C': 0.7}
-New best val metric:0.9834254143646409
-Found new best metric with :{'gamma': 0.001, 'C': 0.7}
-New best val metric:0.988950276243094
-Found new best metric with :{'gamma': 0.0001, 'C': 5}
-New best val metric:0.994475138121547
-Classification report for classifier SVC(C=10, gamma=0.0001):
-              precision    recall  f1-score   support
+To get started, we'll take you through a sample Python Flask app, help you set up a development environment, deploy to IBM Cloud and add a Cloudant database.
 
-           0       1.00      1.00      1.00        15
-           1       0.96      1.00      0.98        22
-           2       1.00      1.00      1.00        13
-           3       1.00      0.93      0.96        14
-           4       1.00      0.89      0.94        18
-           5       1.00      0.94      0.97        18
-           6       1.00      1.00      1.00        16
-           7       1.00      1.00      1.00        15
-           8       0.96      0.96      0.96        26
-           9       0.88      1.00      0.94        22
+The following instructions are for deploying the application as a Cloud Foundry application. To deploy as a container to **IBM Cloud Kubernetes Service** instead, [see README-kubernetes.md](README-kubernetes.md)
 
-    accuracy                           0.97       179
-   macro avg       0.98      0.97      0.98       179
-weighted avg       0.97      0.97      0.97       179
+## Prerequisites
 
+You'll need the following:
+* [IBM Cloud account](https://console.ng.bluemix.net/registration/)
+* [Cloud Foundry CLI](https://github.com/cloudfoundry/cli#downloads)
+* [Git](https://git-scm.com/downloads)
+* [Python](https://www.python.org/downloads/)
 
-Best hyperparameters were:
-{'gamma': 0.0001, 'C': 5}
-```
+## 1. Clone the sample app
 
+Now you're ready to start working with the app. Clone the repo and change to the directory where the sample app is located.
+  ```
+git clone https://github.com/IBM-Cloud/get-started-python
+cd get-started-python
+  ```
 
+  Peruse the files in the *get-started-python* directory to familiarize yourself with the contents.
 
+## 2. Run the app locally
 
-```
-docker build -t exp:v1 -f docker/Dockerfile .
-docker run -it exp:v1
-```
+Install the dependencies listed in the [requirements.txt](https://pip.readthedocs.io/en/stable/user_guide/#requirements-files) file to be able to run the app locally.
 
-```
-export FLASK_APP=api/app.py ; flask run
+You can optionally use a [virtual environment](https://packaging.python.org/installing/#creating-and-using-virtual-environments) to avoid having these dependencies clash with those of other Python projects or your operating system.
+  ```
+pip install -r requirements.txt
+  ```
 
-Quick commands 
-#curl http://127.0.0.1:5000/sum -X POST -H 'Content-Type: application/json' -d '{"x":5,"y": 7}'
-#curl http://127.0.0.1:5000/predict -X POST  -H 'Content-Type: application/json' -d '{"image": ["0.0","0.0","0.0","11.999999999999982","13.000000000000004","5.000000000000021","8.881784197001265e-15","0.0","0.0","0.0","0.0","10.999999999999986","15.999999999999988","9.000000000000005","1.598721155460224e-14","0.0","0.0","0.0","2.9999999999999925","14.999999999999979","15.999999999999998","6.000000000000022","1.0658141036401509e-14","0.0","6.217248937900871e-15","6.999999999999987","14.99999999999998","15.999999999999996","16.0","2.0000000000000284","3.552713678800507e-15","0.0","5.5220263365470826e-30","6.21724893790087e-15","1.0000000000000113","15.99999999999998","16.0","3.000000000000022","5.32907051820075e-15","0.0","0.0","0.0","0.9999999999999989","15.99999999999998","16.0","6.000000000000015","1.0658141036401498e-14","0.0","0.0","0.0","0.9999999999999989","15.99999999999998","16.0","6.000000000000018","1.0658141036401503e-14","0.0","0.0","0.0","0.0","10.999999999999986","15.999999999999993","10.00000000000001","1.7763568394002505e-14","0.0"]}'
-```
+Run the app.
+  ```
+python hello.py
+  ```
+
+ View your app at: http://localhost:8000
+
+## 3. Prepare the app for deployment
+
+To deploy to IBM Cloud, it can be helpful to set up a manifest.yml file. One is provided for you with the sample. Take a moment to look at it.
+
+The manifest.yml includes basic information about your app, such as the name, how much memory to allocate for each instance and the route. In this manifest.yml **random-route: true** generates a random route for your app to prevent your route from colliding with others.  You can replace **random-route: true** with **host: myChosenHostName**, supplying a host name of your choice. [Learn more...](https://console.bluemix.net/docs/manageapps/depapps.html#appmanifest)
+ ```
+ applications:
+ - name: GetStartedPython
+   random-route: true
+   memory: 128M
+ ```
+
+## 4. Deploy the app
+
+You can use the Cloud Foundry CLI to deploy apps.
+
+Choose your API endpoint
+   ```
+cf api <API-endpoint>
+   ```
+
+Replace the *API-endpoint* in the command with an API endpoint from the following list.
+
+|URL                             |Region          |
+|:-------------------------------|:---------------|
+| https://api.ng.bluemix.net     | US South       |
+| https://api.eu-de.bluemix.net  | Germany        |
+| https://api.eu-gb.bluemix.net  | United Kingdom |
+| https://api.au-syd.bluemix.net | Sydney         |
+
+Login to your IBM Cloud account
+
+  ```
+cf login
+  ```
+
+From within the *get-started-python* directory push your app to IBM Cloud
+  ```
+cf push
+  ```
+
+This can take a minute. If there is an error in the deployment process you can use the command `cf logs <Your-App-Name> --recent` to troubleshoot.
+
+When deployment completes you should see a message indicating that your app is running.  View your app at the URL listed in the output of the push command.  You can also issue the
+  ```
+cf apps
+  ```
+  command to view your apps status and see the URL.
+
+## 5. Add a database
+
+Next, we'll add a NoSQL database to this application and set up the application so that it can run locally and on IBM Cloud.
+
+1. Log in to IBM Cloud in your Browser. Browse to the `Dashboard`. Select your application by clicking on its name in the `Name` column.
+2. Click on `Connections` then `Connect new`.
+2. In the `Data & Analytics` section, select `Cloudant NoSQL DB` and `Create` the service.
+3. Select `Restage` when prompted. IBM Cloud will restart your application and provide the database credentials to your application using the `VCAP_SERVICES` environment variable. This environment variable is only available to the application when it is running on IBM Cloud.
+
+Environment variables enable you to separate deployment settings from your source code. For example, instead of hardcoding a database password, you can store this in an environment variable which you reference in your source code. [Learn more...](/docs/manageapps/depapps.html#app_env)
+
+## 6. Use the database
+
+We're now going to update your local code to point to this database. We'll create a json file that will store the credentials for the services the application will use. This file will get used ONLY when the application is running locally. When running in IBM Cloud, the credentials will be read from the VCAP_SERVICES environment variable.
+
+1. Create a file called `vcap-local.json` in the `get-started-python` directory with the following content:
+  ```
+  {
+    "services": {
+      "cloudantNoSQLDB": [
+        {
+          "credentials": {
+            "username":"CLOUDANT_DATABASE_USERNAME",
+            "password":"CLOUDANT_DATABASE_PASSWORD",
+            "host":"CLOUDANT_DATABASE_HOST"
+          },
+          "label": "cloudantNoSQLDB"
+        }
+      ]
+    }
+  }
+  ```
+
+2. Back in the IBM Cloud UI, select your App -> Connections -> Cloudant -> View Credentials
+
+3. Copy and paste the `username`, `password`, and `host` from the credentials to the same fields of the `vcap-local.json` file replacing **CLOUDANT_DATABASE_USERNAME**, **CLOUDANT_DATABASE_PASSWORD**, and **CLOUDANT_DATABASE_URL**.
+
+4. Run your application locally.
+  ```
+python hello.py
+  ```
+
+  View your app at: http://localhost:8000. Any names you enter into the app will now get added to the database.
+
+5. Make any changes you want and re-deploy to IBM Cloud!
+  ```
+cf push
+  ```
+
+  View your app at the URL listed in the output of the push command, for example, *myUrl.mybluemix.net*.
